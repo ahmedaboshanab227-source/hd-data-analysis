@@ -97,7 +97,7 @@ st.markdown("""
 # 3. File Upload Component
 uploaded_file = st.file_uploader("📂 Upload the Logistics Excel Masterfile (.xlsx)", type=["xlsx"])
 
-# Optimized function with advanced Font & Shadow properties
+# Optimized function with advanced Font & Shadow properties from your list
 def create_green_chart(df, x_col, y_col, title):
     fig = px.bar(df, x=x_col, y=y_col, title=title, text_auto='.0f',
                  color_discrete_sequence=['#28a745']) # Professional Green
@@ -131,7 +131,7 @@ def create_green_chart(df, x_col, y_col, title):
             size=13,
             weight="bold",
             color="#0f172a",
-            shadow="auto"
+            shadow="auto" # Using the shadow property for 3D contrast pop
         ),
         hovertemplate="<b>%{x}</b><br>Total Unique Orders: %{y}<extra></extra>"
     )
@@ -156,7 +156,8 @@ if uploaded_file is not None:
             # ---------------------------------------------------------
             with tab_hd:
                 df_hd = pd.read_excel(xls, sheet_name='HD')
-                # Safe string cleaning
+                # Clean headers and values securely
+                df_hd.columns = df_hd.columns.str.strip()
                 for col_name in df_hd.columns:
                     if df_hd[col_name].dtype == "object":
                         df_hd[col_name] = df_hd[col_name].astype(str).str.strip()
@@ -192,6 +193,7 @@ if uploaded_file is not None:
             # ---------------------------------------------------------
             with tab_conf:
                 df_conf = pd.read_excel(xls, sheet_name='Confirmation')
+                df_conf.columns = df_conf.columns.str.strip()
                 for col_name in df_conf.columns:
                     if df_conf[col_name].dtype == "object":
                         df_conf[col_name] = df_conf[col_name].astype(str).str.strip()
@@ -214,6 +216,7 @@ if uploaded_file is not None:
             # ---------------------------------------------------------
             with tab_ret:
                 df_ret = pd.read_excel(xls, sheet_name='Return')
+                df_ret.columns = df_ret.columns.str.strip()
                 for col_name in df_ret.columns:
                     if df_ret[col_name].dtype == "object":
                         df_ret[col_name] = df_ret[col_name].astype(str).str.strip()
