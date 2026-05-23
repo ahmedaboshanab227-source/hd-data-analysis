@@ -9,80 +9,134 @@ import io
 # 1. Page Configuration & Theme Styling
 st.set_page_config(page_title="EXTRA HD DATA ANALYZER", layout="wide")
 
-# Custom CSS for Blue/Yellow theme and the requested watermark background
+# Advanced Custom CSS for 3D Neumorphic / Skeuomorphic Look
 st.markdown("""
     <style>
-    /* Background Watermark */
+    /* Background Gradient */
     .stApp {
-        background-image: linear-gradient(rgba(255,255,255,0.92), rgba(255,255,255,0.92)), url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600"><text x="50%" y="50%" font-family="Arial, sans-serif" font-weight="bold" font-size="140" fill="rgba(0, 51, 102, 0.04)" text-anchor="middle">E<tspan font-size="90" dy="-15">X</tspan>tRA</text></svg>');
-        background-repeat: repeat;
-        background-position: center;
+        background: linear-gradient(135deg, #f0f4f8 0%, #e2ebf0 100%);
     }
     
-    /* Global Styles */
-    h1, h2, h3 { color: #003366 !important; font-family: 'Arial', sans-serif; }
+    /* 3D Soft Embossed Headers */
+    h1 {
+        color: #003366 !important;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-weight: 800;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1), -1px -1px 0px rgba(255, 255, 255, 0.9);
+    }
+    h2, h3 { 
+        color: #003366 !important; 
+        font-family: 'Segoe UI', sans-serif;
+        font-weight: 600;
+    }
     
-    /* Global Table Styling */
-    .stDataFrame {
-        border: 1px solid #003366;
-        border-radius: 5px;
+    /* 3D Glass & Neumorphic Cards for Data & File Uploader */
+    div[data-testid="stFileUploader"], .stDataFrame, div[data-testid="stMetricBlock"] {
+        background: #f0f4f8 !important;
+        border-radius: 16px !important;
+        box-shadow: 9px 9px 16px rgba(163, 177, 198, 0.6), -9px -9px 16px rgba(255, 255, 255, 0.8) !important;
+        border: 1px solid rgba(255, 255, 255, 0.5) !important;
+        padding: 20px !important;
+    }
+
+    /* Tabs Styling 3D buttons effect */
+    button[data-baseweb="tab"] {
+        background: #f0f4f8 !important;
+        border-radius: 10px 10px 0px 0px !important;
+        box-shadow: 3px -3px 6px rgba(163, 177, 198, 0.4), -3px -3px 6px rgba(255, 255, 255, 0.7) !important;
+        border: none !important;
+        margin-right: 5px !important;
+        color: #003366 !important;
+        font-weight: bold !important;
+    }
+    button[data-baseweb="tab"][aria-selected="true"] {
+        background: #003366 !important;
+        color: #ffffff !important;
+        box-shadow: inset 2px 2px 5px rgba(0,0,0,0.3) !important;
+    }
+
+    /* 3D Hover Effects on Buttons */
+    div.stButton > button {
+        background: linear-gradient(145deg, #003366, #002244) !important;
+        color: white !important;
+        border-radius: 12px !important;
+        border: none !important;
+        box-shadow: 5px 5px 10px rgba(163, 177, 198, 0.6), -5px -5px 10px rgba(255, 255, 255, 0.8) !important;
+        transition: all 0.2s ease-in-out !important;
+        font-weight: bold !important;
+        font-size: 1.1em !important;
+        padding: 12px 24px !important;
+    }
+    div.stButton > button:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: 7px 7px 14px rgba(163, 177, 198, 0.7), -7px -7px 14px rgba(255, 255, 255, 0.9) !important;
+        background: linear-gradient(145deg, #004488, #003366) !important;
+    }
+    div.stButton > button:active {
+        transform: translateY(1px) !important;
+        box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4) !important;
     }
     </style>
     """, unsafe_allow_html=True)
 
-# App Header Component - Title with centered Big Yellow X below
-st.markdown('<div style="text-align: center; margin-bottom: 30px;">'
-            '<h1 style="font-size: 3em; letter-spacing: 1px;">EXTRA HD DATA ANALYZER</h1>'
-            '<div style="font-size: 5.5em; font-weight: 900; color: #FFCC00; margin-top: -10px; margin-bottom: 5px; line-height: 1em;">X</div>'
-            '<p style="color: #666; font-size: 1.1em;">Upload your logistics Excel sheet to get automated insights instantly</p>'
-            '</div>', unsafe_allow_html=True)
+# 3D Stylized Header Component (No image file needed)
+st.markdown("""
+    <div style="text-align: center; margin-bottom: 40px; padding: 20px;">
+        <h1 style="font-size: 3.8em; letter-spacing: 2px; margin-bottom: 0px; display: inline-block;">
+            <span style="color: #003366; text-shadow: 3px 3px 0px #e2ebf0, 6px 6px 0px rgba(0,0,0,0.15);">E<span style="color: #FFCC00; font-size: 1.2em; font-style: italic; text-shadow: 3px 3px 0px #003366;">X</span>TRA</span> 
+            <span style="font-size: 0.7em; color: #003366; font-weight: 300;">HD DATA ANALYZER</span>
+        </h1>
+        <p style="color: #556677; font-size: 1.2em; margin-top: 15px; font-weight: 500;">
+            🚀 Advanced Logistics Intelligence & Automated Performance Insights
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
 
 # 2. File Upload Zone
-uploaded_file = st.file_uploader("Upload your Excel File (.xlsx)", type=["xlsx"])
+uploaded_file = st.file_uploader("📥 Drop your Excel Logistics File here (.xlsx)", type=["xlsx"])
 
-# Helper function to generate standardized charts with text values on top
+# Helper function to generate standardized 3D-looking charts
 def create_bar_chart(df, x_col, y_col, title):
     fig = px.bar(df, x=x_col, y=y_col, title=title, text_auto=True,
-                 color_discrete_sequence=['#003366']) # Blue Bars
+                 color_discrete_sequence=['#003366']) # Deep Blue Bars
     fig.update_layout(
         plot_bgcolor='rgba(0,0,0,0)',
         paper_bgcolor='rgba(0,0,0,0)',
         xaxis_title=x_col,
         yaxis_title="Unique Orders Count",
-        font=dict(color="#003366")
+        font=dict(color="#003366", family="Segoe UI"),
+        title_font=dict(size=18, color="#003366")
     )
     fig.update_traces(
         marker_line_color='#FFCC00', 
         marker_line_width=1.5,
-        textposition='outside' # Puts numbers clearly on top of bars
+        textposition='outside', # Puts numbers clearly on top of bars
+        shadow=dict(color="rgba(0,0,0,0.3)", blur=5, x=2, y=2) # Simulated 3D bar shadow
     )
     return fig
 
 # 3. Processing Core
 if uploaded_file is not None:
     try:
-        # Load all requested sheets
         xls = pd.ExcelFile(uploaded_file)
         sheets_in_file = xls.sheet_names
         
-        # Check for required sheets
         required_sheets = ['HD', 'Confirmation', 'Return']
         missing_sheets = [s for s in required_sheets if s not in sheets_in_file]
         
         if missing_sheets:
-            st.error(f"Error: Missing required sheets: {', '.join(missing_sheets)}")
+            st.error(f"⚠️ Error: Missing required sheets: {', '.join(missing_sheets)}")
         else:
-            # Container for all processed summary data to export to PowerPoint later
             ppt_data = {}
 
-            # Create Tabs for Navigation
-            tab1, tab2, tab3 = st.tabs(["HD Analysis", "Confirmation Analysis", "Return Analysis"])
+            # Create Modern Navigation Tabs
+            tab1, tab2, tab3 = st.tabs(["📊 HD Analysis Dashboard", "✅ Confirmation Summary", "🔄 Return Trends"])
 
             # ----------------------------------------
             # TAB 1: HD SHEET ANALYSIS
             # ----------------------------------------
             with tab1:
-                st.header("HD Sheet Dashboard")
+                st.markdown("<h3 style='margin-top:15px;'>🔹 High-Definition Logistics Overview</h3>", unsafe_allow_html=True)
                 df_hd = pd.read_excel(xls, sheet_name='HD')
                 df_hd.columns = df_hd.columns.str.strip()
                 
@@ -102,22 +156,18 @@ if uploaded_file is not None:
                         if col in df_hd.columns or (col == 'Month' and 'Month' in df_hd.columns):
                             display_name = "Actual Delivery Date (By Month)" if col == 'Month' else col
                             
-                            # Clean missing data for grouping
                             df_temp = df_hd.dropna(subset=[col])
-                            
-                            # Eliminate duplicates on BOOK ID (nunique)
                             summary = df_temp.groupby(col)['BOOK ID'].nunique().reset_index()
                             summary.columns = [display_name, 'Unique Orders']
                             summary = summary.sort_values(by='Unique Orders', ascending=False)
                             
                             ppt_data['HD'][display_name] = summary
                             
-                            # Layout split: Chart on left, Data Table with numbers on right
                             chart_col, table_col = st.columns([2, 1])
                             with chart_col:
-                                st.plotly_chart(create_bar_chart(summary, display_name, 'Unique Orders', f"Orders by {display_name}"), use_container_width=True)
+                                st.plotly_chart(create_bar_chart(summary, display_name, 'Unique Orders', f"Distribution by {display_name}"), use_container_width=True)
                             with table_col:
-                                st.markdown(f"**{display_name} Summary Table:**")
+                                st.markdown(f"<p style='color:#003366; font-weight:bold; margin-bottom:5px;'>📋 {display_name} Metrics Data:</p>", unsafe_allow_html=True)
                                 st.dataframe(summary, hide_index=True, use_container_width=True)
                                 
                             st.divider()
@@ -128,7 +178,7 @@ if uploaded_file is not None:
             # TAB 2: CONFIRMATION SHEET ANALYSIS
             # ----------------------------------------
             with tab2:
-                st.header("Confirmation Sheet Dashboard")
+                st.markdown("<h3 style='margin-top:15px;'>🔹 Execution & Confirmation Intelligence</h3>", unsafe_allow_html=True)
                 df_conf = pd.read_excel(xls, sheet_name='Confirmation')
                 df_conf.columns = df_conf.columns.str.strip()
                 
@@ -144,21 +194,18 @@ if uploaded_file is not None:
                         if col in df_conf.columns or (col == 'Month' and 'Month' in df_conf.columns):
                             display_name = "Date (By Month)" if col == 'Month' else col
                             
-                            # Clean missing data for grouping
                             df_temp = df_conf.dropna(subset=[col])
-                            
                             summary = df_temp.groupby(col)['BOOK ID'].nunique().reset_index()
                             summary.columns = [display_name, 'Unique Orders']
                             summary = summary.sort_values(by='Unique Orders', ascending=False)
                             
                             ppt_data['Confirmation'][display_name] = summary
                             
-                            # Layout split for numbers table
                             chart_col, table_col = st.columns([2, 1])
                             with chart_col:
-                                st.plotly_chart(create_bar_chart(summary, display_name, 'Unique Orders', f"Orders by {display_name}"), use_container_width=True)
+                                st.plotly_chart(create_bar_chart(summary, display_name, 'Unique Orders', f"Performance by {display_name}"), use_container_width=True)
                             with table_col:
-                                st.markdown(f"**{display_name} Summary Table:**")
+                                st.markdown(f"<p style='color:#003366; font-weight:bold; margin-bottom:5px;'>📋 {display_name} Metrics Data:</p>", unsafe_allow_html=True)
                                 st.dataframe(summary, hide_index=True, use_container_width=True)
                                 
                             st.divider()
@@ -169,7 +216,7 @@ if uploaded_file is not None:
             # TAB 3: RETURN SHEET ANALYSIS
             # ----------------------------------------
             with tab3:
-                st.header("Return Sheet Dashboard")
+                st.markdown("<h3 style='margin-top:15px;'>🔹 Operational Reverse Logistics (Returns)</h3>", unsafe_allow_html=True)
                 df_ret = pd.read_excel(xls, sheet_name='Return')
                 df_ret.columns = df_ret.columns.str.strip()
                 
@@ -179,9 +226,7 @@ if uploaded_file is not None:
                     df_ret['Parsed Date'] = pd.to_datetime(df_ret[date_col], errors='coerce')
                     df_ret['Month'] = df_ret['Parsed Date'].dt.strftime('%Y-%m ( %B )')
                     
-                    # Clean missing data for grouping
                     df_temp = df_ret.dropna(subset=['Month'])
-                    
                     summary_ret = df_temp.groupby('Month')['BOOK ID'].nunique().reset_index()
                     summary_ret.columns = ['Month', 'Unique Returns']
                     summary_ret = summary_ret.sort_values(by='Month')
@@ -190,9 +235,9 @@ if uploaded_file is not None:
                     
                     chart_col, table_col = st.columns([2, 1])
                     with chart_col:
-                        st.plotly_chart(create_bar_chart(summary_ret, 'Month', 'Unique Returns', "Returned Orders Trend by Month"), use_container_width=True)
+                        st.plotly_chart(create_bar_chart(summary_ret, 'Month', 'Unique Returns', "Returned Orders Trend Analysis"), use_container_width=True)
                     with table_col:
-                        st.markdown("**Monthly Returns Summary Table:**")
+                        st.markdown("<p style='color:#003366; font-weight:bold; margin-bottom:5px;'>📋 Returns Trend Data:</p>", unsafe_allow_html=True)
                         st.dataframe(summary_ret, hide_index=True, use_container_width=True)
                 else:
                     st.error("Make sure 'Return' sheet has both 'BOOK ID' and a valid 'Date' column.")
@@ -200,10 +245,9 @@ if uploaded_file is not None:
             # ----------------------------------------
             # POWERPOINT EXPORT LOGIC
             # ----------------------------------------
-            st.divider()
-            st.subheader("Export Results")
+            st.markdown("<br><h2 style='text-align: center;'>💼 Executive Report Deployment</h2>", unsafe_allow_html=True)
             
-            if st.button("Generate & Download PowerPoint Report 📊", use_container_width=True):
+            if st.button("⚡ Compiling Executive PowerPoint Report 📊", use_container_width=True):
                 prs = Presentation()
                 DARK_BLUE = RGBColor(0, 51, 102)
                 YELLOW = RGBColor(255, 204, 0)
@@ -276,12 +320,12 @@ if uploaded_file is not None:
                 ppt_buffer.seek(0)
                 
                 st.download_button(
-                    label="📥 Click here to save the PowerPoint file",
+                    label="📥 Click here to save the Executive PowerPoint file",
                     data=ppt_buffer,
-                    file_name="EXTRA_HD_Data_Analysis.pptx",
+                    file_name="EXTRA_HD_Professional_Report.pptx",
                     mime="application/vnd.openxmlformats-officedocument.presentationml.presentation"
                 )
-                st.success("PowerPoint layout compiled successfully!")
+                st.success("✨ Professional 3D Executive layout compiled successfully!")
                 
     except Exception as e:
-        st.error(f"An error occurred while parsing the file: {e}")
+        st.error(f"❌ An error occurred while parsing the file: {e}")
