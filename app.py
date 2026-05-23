@@ -7,16 +7,16 @@ from pptx.dml.color import RGBColor
 from pptx.enum.text import PP_ALIGN
 import io
 
-# 1. Page Configuration & Professional Fonts
+# 1. Page Configuration
 st.set_page_config(page_title="EXTRA Logistics Analyzer", layout="wide")
 
-# Advanced Custom CSS to match the 'extra' brand image
+# Advanced Custom CSS to match the 'extra' brand image perfectly
 st.markdown("""
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
     
     html, body, [class*="css"] {
-        font-family: 'Inter', sans-serif;
+        font-family: 'Inter', 'Segoe UI', sans-serif;
     }
 
     .stApp {
@@ -39,35 +39,37 @@ st.markdown("""
     
     .arabic-brand {
         color: white;
-        font-size: 50px;
+        font-size: 52px;
         font-weight: 800;
         margin-right: -10px;
-        font-family: 'Arial'; /* Standard Arabic Bold */
+        font-family: 'Arial', sans-serif;
     }
     
     .yellow-x {
         color: #ffc20e; /* Extra Yellow */
-        font-size: 75px;
+        font-size: 78px;
         font-style: italic;
         font-weight: 900;
         margin: 0 5px;
         display: inline-block;
-        transform: skewX(-10deg);
+        transform: skewX(-12deg);
+        text-shadow: 3px 3px 0px #003b6f;
     }
     
     .english-brand {
         color: white;
-        font-size: 45px;
+        font-size: 48px;
         font-weight: 700;
         letter-spacing: -2px;
     }
 
-    /* 3D Neumorphic Cards */
+    /* 3D Neumorphic Metrics */
     div[data-testid="stMetricBlock"] {
         background: white !important;
         border-radius: 12px !important;
-        box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1) !important;
-        border-left: 5px solid #28a745 !important;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05) !important;
+        border-left: 6px solid #28a745 !important;
+        padding: 15px !important;
     }
 
     .stDataFrame {
@@ -78,7 +80,7 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# 2. Top Navigation Bar (Logo Simulation)
+# 2. Top Brand Navigation Bar
 st.markdown("""
     <div class="extra-header">
         <div class="extra-logo-box">
@@ -86,7 +88,7 @@ st.markdown("""
             <span class="yellow-x">X</span>
             <span class="english-brand">extra</span>
         </div>
-        <div style="color: #dae8f5; font-size: 1.1em; margin-top: 10px; font-weight: 400;">
+        <div style="color: #dae8f5; font-size: 1.1em; margin-top: 10px; font-weight: 600; letter-spacing: 1px;">
             LOGISTICS DATA INTELLIGENCE UNIT
         </div>
     </div>
@@ -95,7 +97,7 @@ st.markdown("""
 # 3. File Upload Component
 uploaded_file = st.file_uploader("📂 Upload the Logistics Excel Masterfile (.xlsx)", type=["xlsx"])
 
-# Specialized function for Professional Green 3D Charts
+# Optimized function with your new advanced Font & Shadow properties
 def create_green_chart(df, x_col, y_col, title):
     fig = px.bar(df, x=x_col, y=y_col, title=title, text_auto='.0f',
                  color_discrete_sequence=['#28a745']) # Professional Green
@@ -105,21 +107,40 @@ def create_green_chart(df, x_col, y_col, title):
         paper_bgcolor='rgba(0,0,0,0)',
         xaxis_title=x_col,
         yaxis_title="Order Volume",
-        font=dict(color="#1e293b", family="Inter"),
-        title_font=dict(size=20, color="#0f172a", font_family="Inter"),
+        # Customizing global chart fonts using the properties you provided
+        font=dict(
+            family="Inter, Segoe UI, sans-serif",
+            size=13,
+            color="#1e293b"
+        ),
+        title_font=dict(
+            size=20, 
+            color="#0f172a", 
+            font_family="Inter",
+            font_weight="bold"
+        ),
         hovermode="x unified"
     )
     
+    # Applying advanced trace text properties (Shadow, Weight, Textposition)
     fig.update_traces(
         marker_line_color='#14532d', 
-        marker_line_width=1,
+        marker_line_width=1.5,
         textposition='outside',
-        opacity=0.9,
+        opacity=0.92,
+        # Font styling for numbers on top of bars
+        textfont=dict(
+            family="Inter, Segoe UI",
+            size=13,
+            weight="bold",
+            color="#0f172a",
+            shadow="auto" # Gives a clean 3D contrast pop to the numbers
+        ),
         hovertemplate="<b>%{x}</b><br>Total Unique Orders: %{y}<extra></extra>"
     )
     return fig
 
-# 4. Processing Core
+# 4. Processing & Math Validation Core
 if uploaded_file is not None:
     try:
         xls = pd.ExcelFile(uploaded_file)
@@ -127,7 +148,7 @@ if uploaded_file is not None:
         
         required = ['HD', 'Confirmation', 'Return']
         if not all(s in sheets for s in required):
-            st.error(f"⚠️ Error: Missing sheets. Ensure file has: {required}")
+            st.error(f"⚠️ Error: Missing sheets. Ensure file has exactly: {required}")
         else:
             ppt_export_data = {}
 
@@ -139,9 +160,9 @@ if uploaded_file is not None:
             with tab_hd:
                 df_hd = pd.read_excel(xls, sheet_name='HD').apply(lambda x: x.str.strip() if x.dtype == "object" else x)
                 
-                # Math Check: Overall Summary Metrics
+                # Verified Math Summary Metrics (Using nunique for 100% precision)
                 total_orders = df_hd['BOOK ID'].nunique()
-                st.metric("Total Unique Orders (HD)", f"{total_orders:,}")
+                st.metric("Total Unique Orders (HD Sheet)", f"{total_orders:,} Orders")
                 
                 if 'Actual Delivery Date' in df_hd.columns:
                     df_hd['Actual Delivery Date'] = pd.to_datetime(df_hd['Actual Delivery Date'], errors='coerce')
@@ -160,9 +181,9 @@ if uploaded_file is not None:
                         
                         c1, c2 = st.columns([2, 1])
                         with c1:
-                            st.plotly_chart(create_green_chart(summary, col, 'Unique Orders', f"HD Performance by {col}"), use_container_width=True)
+                            st.plotly_chart(create_green_chart(summary, col, 'Unique Orders', f"HD Distribution by {col}"), use_container_width=True)
                         with c2:
-                            st.markdown(f"**{col} Stats**")
+                            st.markdown(f"<p style='color:#005da9; font-weight:700; margin-top:15px;'>📋 Data Table: {col}</p>", unsafe_allow_html=True)
                             st.dataframe(summary, hide_index=True, use_container_width=True)
                         st.divider()
 
@@ -171,7 +192,7 @@ if uploaded_file is not None:
             # ---------------------------------------------------------
             with tab_conf:
                 df_conf = pd.read_excel(xls, sheet_name='Confirmation').apply(lambda x: x.str.strip() if x.dtype == "object" else x)
-                st.metric("Total Confirmations", f"{df_conf['BOOK ID'].nunique():,}")
+                st.metric("Total Confirmed Deliveries", f"{df_conf['BOOK ID'].nunique():,} Orders")
                 
                 ppt_export_data['Confirmation'] = {}
                 for col in ['Technician', 'Driver', 'Truck No']:
@@ -181,7 +202,7 @@ if uploaded_file is not None:
                         summary = summary.sort_values('Unique Orders', ascending=False)
                         
                         ppt_export_data['Confirmation'][col] = summary
-                        st.plotly_chart(create_green_chart(summary, col, 'Unique Orders', f"Confirmation Count by {col}"), use_container_width=True)
+                        st.plotly_chart(create_green_chart(summary, col, 'Unique Orders', f"Confirmation Performance by {col}"), use_container_width=True)
                         st.divider()
 
             # ---------------------------------------------------------
@@ -189,89 +210,97 @@ if uploaded_file is not None:
             # ---------------------------------------------------------
             with tab_ret:
                 df_ret = pd.read_excel(xls, sheet_name='Return').apply(lambda x: x.str.strip() if x.dtype == "object" else x)
-                st.metric("Total Returned Items", f"{df_ret['BOOK ID'].nunique():,}")
+                st.metric("Total Reverse Logistics (Returns)", f"{df_ret['BOOK ID'].nunique():,} Items")
                 
                 if 'Date' in df_ret.columns:
                     df_ret['Month'] = pd.to_datetime(df_ret['Date'], errors='coerce').dt.strftime('%B %Y')
                     summary = df_ret.groupby('Month')['BOOK ID'].nunique().reset_index()
                     summary.columns = ['Month', 'Returns']
                     ppt_export_data['Return'] = summary
-                    st.plotly_chart(create_green_chart(summary, 'Month', 'Returns', "Monthly Return Volume"), use_container_width=True)
+                    st.plotly_chart(create_green_chart(summary, 'Month', 'Returns', "Monthly Overtime Returns Trend"), use_container_width=True)
 
             # ---------------------------------------------------------
-            # PROFESSIONAL POWERPOINT EXPORT
+            # ADVANCED PROFESSIONAL POWERPOINT EXPORT
             # ---------------------------------------------------------
-            st.markdown("### 📄 Export to Corporate Presentation")
-            if st.button("Generate Professional extra Presentation 🚀", use_container_width=True):
+            st.markdown("<br>", unsafe_allow_html=True)
+            st.markdown("### 📄 Executive Presentation Generator")
+            if st.button("Generate Executive extra Presentation 🚀", use_container_width=True):
                 prs = Presentation()
                 BLUE_EXTRA = RGBColor(0, 93, 169)
                 GREEN_EXTRA = RGBColor(40, 167, 69)
                 WHITE = RGBColor(255, 255, 255)
+                DARK_TEXT = RGBColor(30, 41, 59)
 
-                # Slide 1: Professional Cover
+                # Slide 1: Premium Cover Slide
                 slide = prs.slides.add_slide(prs.slide_layouts[6])
-                # Add Blue background header to Cover
-                shape = slide.shapes.add_shape(1, 0, 0, prs.slide_width, Inches(2))
-                shape.fill.solid()
-                shape.fill.fore_color.rgb = BLUE_EXTRA
-                shape.line.width = 0
+                bg = slide.shapes.add_shape(1, 0, 0, prs.slide_width, Inches(3.2))
+                bg.fill.solid()
+                bg.fill.fore_color.rgb = BLUE_EXTRA
+                bg.line.width = 0
                 
-                title = slide.shapes.add_textbox(Inches(0.5), Inches(0.5), Inches(9), Inches(1))
+                title = slide.shapes.add_textbox(Inches(0.5), Inches(1), Inches(9), Inches(1.5))
                 tf = title.text_frame
                 p = tf.add_paragraph()
-                p.text = "اكسترا X extra"
-                p.font.size = Pt(44)
+                p.text = "اكسترا X extra" # Replicating image logo in text
+                p.font.size = Pt(46)
                 p.font.bold = True
                 p.font.color.rgb = WHITE
                 p.alignment = PP_ALIGN.CENTER
 
-                subtitle = slide.shapes.add_textbox(Inches(1), Inches(3), Inches(8), Inches(1))
+                subtitle = slide.shapes.add_textbox(Inches(1), Inches(4.5), Inches(8), Inches(1))
                 p2 = subtitle.text_frame.add_paragraph()
-                p2.text = "Logistics Performance Analysis Report"
-                p2.font.size = Pt(28)
-                p2.font.color.rgb = BLUE_EXTRA
+                p2.text = "Official Logistics Performance & Data Insights Report"
+                p2.font.size = Pt(24)
+                p2.font.bold = True
+                p2.font.color.rgb = DARK_TEXT
                 p2.alignment = PP_ALIGN.CENTER
 
-                # Content Slides
+                # Content Slides with consistent Brand Header
                 for section, cats in ppt_export_data.items():
                     if isinstance(cats, dict):
                         for cat_name, df_s in cats.items():
                             slide = prs.slides.add_slide(prs.slide_layouts[6])
-                            # Header Bar
-                            header_bar = slide.shapes.add_shape(1, 0, 0, prs.slide_width, Inches(0.8))
+                            
+                            # Corporate Top Header Bar
+                            header_bar = slide.shapes.add_shape(1, 0, 0, prs.slide_width, Inches(0.9))
                             header_bar.fill.solid()
                             header_bar.fill.fore_color.rgb = BLUE_EXTRA
                             header_bar.line.width = 0
 
-                            # Slide Title
-                            title_shape = slide.shapes.add_textbox(Inches(0.2), Inches(0.1), Inches(8), Inches(0.5))
-                            title_shape.text_frame.text = f"extra LOGISTICS | {section} - {cat_name}"
+                            # Slide Brand Title
+                            title_shape = slide.shapes.add_textbox(Inches(0.3), Inches(0.15), Inches(9), Inches(0.6))
+                            title_shape.text_frame.text = f"اكسترا X extra  |  {section} - {cat_name}"
                             title_shape.text_frame.paragraphs[0].font.color.rgb = WHITE
                             title_shape.text_frame.paragraphs[0].font.size = Pt(20)
                             title_shape.text_frame.paragraphs[0].font.bold = True
 
-                            # Data Table
-                            df_p = df_s.head(12)
+                            # Clean Data Table
+                            df_p = df_s.head(11)
                             rows, cols = df_p.shape[0] + 1, 2
-                            table = slide.shapes.add_table(rows, cols, Inches(1), Inches(1.5), Inches(7.5), Inches(4)).table
+                            table = slide.shapes.add_table(rows, cols, Inches(1), Inches(1.6), Inches(7.5), Inches(4.2)).table
                             
-                            # Table Headers
+                            # Premium Table Header Configuration
                             table.cell(0, 0).text = str(df_p.columns[0])
-                            table.cell(0, 1).text = "Orders"
+                            table.cell(0, 1).text = "Unique Orders Total"
                             for c in range(2):
-                                table.cell(0, c).fill.solid()
-                                table.cell(0, c).fill.fore_color.rgb = GREEN_EXTRA
-                                table.cell(0, c).text_frame.paragraphs[0].font.color.rgb = WHITE
+                                cell = table.cell(0, c)
+                                cell.fill.solid()
+                                cell.fill.fore_color.rgb = GREEN_EXTRA
+                                cell.text_frame.paragraphs[0].font.color.rgb = WHITE
+                                cell.text_frame.paragraphs[0].font.bold = True
+                                cell.text_frame.paragraphs[0].font.size = Pt(14)
 
-                            # Table Content
-                            for i, row in df_p.iterrows():
-                                table.cell(i+1, 0).text = str(row[0])
-                                table.cell(i+1, 1).text = str(row[1])
+                            # Populate Corporate Records
+                            for i, row in df_p.reset_index(drop=True).iterrows():
+                                table.cell(i+1, 0).text = str(row.iloc[0])
+                                table.cell(i+1, 1).text = f"{row.iloc[1]:,}"
+                                table.cell(i+1, 0).text_frame.paragraphs[0].font.size = Pt(12)
+                                table.cell(i+1, 1).text_frame.paragraphs[0].font.size = Pt(12)
                     
                 buffer = io.BytesIO()
                 prs.save(buffer)
                 buffer.seek(0)
-                st.download_button("📥 Download Official extra Presentation", buffer, "extra_Logistics_Report.pptx")
+                st.download_button("📥 Download Official extra Presentation Report", buffer, "extra_Premium_Logistics_Report.pptx")
 
     except Exception as e:
-        st.error(f"❌ Error during analysis: {e}")
+        st.error(f"❌ Error during processing: {e}")
