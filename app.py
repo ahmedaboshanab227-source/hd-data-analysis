@@ -107,7 +107,6 @@ def create_green_chart(df, x_col, y_col, title):
         paper_bgcolor='rgba(0,0,0,0)',
         xaxis_title=x_col,
         yaxis_title="Order Volume",
-        # Customizing global chart fonts using the properties provided
         font=dict(
             family="Inter, Segoe UI, sans-serif",
             size=13,
@@ -122,19 +121,17 @@ def create_green_chart(df, x_col, y_col, title):
         hovermode="x unified"
     )
     
-    # Applying advanced trace text properties (Shadow, Weight, Textposition)
     fig.update_traces(
         marker_line_color='#14532d', 
         marker_line_width=1.5,
         textposition='outside',
         opacity=0.92,
-        # Font styling for numbers on top of bars
         textfont=dict(
             family="Inter, Segoe UI",
             size=13,
             weight="bold",
             color="#0f172a",
-            shadow="auto" # Gives a clean 3D contrast pop to the numbers
+            shadow="auto"
         ),
         hovertemplate="<b>%{x}</b><br>Total Unique Orders: %{y}<extra></extra>"
     )
@@ -158,9 +155,12 @@ if uploaded_file is not None:
             # HD ANALYSIS
             # ---------------------------------------------------------
             with tab_hd:
-                df_hd = pd.read_excel(xls, sheet_name='HD').apply(lambda x: x.str.strip() if x.dtype == "object" else x)
+                df_hd = pd.read_excel(xls, sheet_name='HD')
+                # Safe string cleaning
+                for col_name in df_hd.columns:
+                    if df_hd[col_name].dtype == "object":
+                        df_hd[col_name] = df_hd[col_name].astype(str).str.strip()
                 
-                # Verified Math Summary Metrics (Using nunique for 100% precision)
                 total_orders = df_hd['BOOK ID'].nunique()
                 st.metric("Total Unique Orders (HD Sheet)", f"{total_orders:,} Orders")
                 
@@ -191,7 +191,11 @@ if uploaded_file is not None:
             # CONFIRMATION ANALYSIS
             # ---------------------------------------------------------
             with tab_conf:
-                df_conf = pd.read_excel(xls, sheet_name='Confirmation').apply(lambda x: x.str.strip() if x.dtype == "object" else x)
+                df_conf = pd.read_excel(xls, sheet_name='Confirmation')
+                for col_name in df_conf.columns:
+                    if df_conf[col_name].dtype == "object":
+                        df_conf[col_name] = df_conf[col_name].astype(str).str.strip()
+                        
                 st.metric("Total Confirmed Deliveries", f"{df_conf['BOOK ID'].nunique():,} Orders")
                 
                 ppt_export_data['Confirmation'] = {}
@@ -209,7 +213,11 @@ if uploaded_file is not None:
             # RETURN ANALYSIS
             # ---------------------------------------------------------
             with tab_ret:
-                df_ret = pd.read_excel(xls, sheet_name='Return').apply(lambda x: x.str.strip() if x.dtype == "object" else x)
+                df_ret = pd.read_excel(xls, sheet_name='Return')
+                for col_name in df_ret.columns:
+                    if df_ret[col_name].dtype == "object":
+                        df_ret[col_name] = df_ret[col_name].astype(str).str.strip()
+                        
                 st.metric("Total Reverse Logistics (Returns)", f"{df_ret['BOOK ID'].nunique():,} Items")
                 
                 if 'Date' in df_ret.columns:
@@ -241,7 +249,7 @@ if uploaded_file is not None:
                 title = slide.shapes.add_textbox(Inches(0.5), Inches(1), Inches(9), Inches(1.5))
                 tf = title.text_frame
                 p = tf.add_paragraph()
-                p.text = "اكسترا X extra" # Replicating image logo in text
+                p.text = "اكسترا X extra"
                 p.font.size = Pt(46)
                 p.font.bold = True
                 p.font.color.rgb = WHITE
