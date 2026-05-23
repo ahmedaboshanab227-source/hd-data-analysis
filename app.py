@@ -97,7 +97,7 @@ st.markdown("""
 # 3. File Upload Component
 uploaded_file = st.file_uploader("📂 Upload the Logistics Excel Masterfile (.xlsx)", type=["xlsx"])
 
-# Optimized function with your new advanced Font & Shadow properties
+# Optimized function with advanced Font & Shadow properties
 def create_green_chart(df, x_col, y_col, title):
     fig = px.bar(df, x=x_col, y=y_col, title=title, text_auto='.0f',
                  color_discrete_sequence=['#28a745']) # Professional Green
@@ -107,7 +107,7 @@ def create_green_chart(df, x_col, y_col, title):
         paper_bgcolor='rgba(0,0,0,0)',
         xaxis_title=x_col,
         yaxis_title="Order Volume",
-        # Customizing global chart fonts using the properties you provided
+        # Customizing global chart fonts using the properties provided
         font=dict(
             family="Inter, Segoe UI, sans-serif",
             size=13,
